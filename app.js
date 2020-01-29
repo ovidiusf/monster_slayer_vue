@@ -12,17 +12,12 @@ new Vue({
             this.monsterHealth = 100;
         },
         attack: function () {
-            this.monsterHealth -= this.calculateDamage(3, 10);
-
-            if(this.checkWin()) {
-                return;
-            }
-            this.playerHealth -= this.calculateDamage(5, 12);
-            
-            this.checkWin();
+            this.playerAttacks(3, 10);
+            this.monsterAttacks();
         },
         specialAttack: function () {
-
+            this.playerAttacks(10, 20);
+            this.monsterAttacks();
         },
         heal: function () {
 
@@ -35,25 +30,36 @@ new Vue({
             // the calculated random damage (up until the max dmg)
             return damage = Math.max(min, Math.floor(Math.random() * max) + 1);
         },
-        checkWin: function() {
+        checkWin: function () {
             if (this.monsterHealth <= 0) {
                 this.monsterHealth = 0;
-                if(confirm('You won! New Game?')) {
+                if (confirm('You won! New Game?')) {
                     this.startGame();
-                }else {
+                } else {
                     this.isGameRunning = false;
                 }
                 return true;
-            }else if(this.playerHealth <=0){
+            } else if (this.playerHealth <= 0) {
                 this.playerHealth = 0;
-                if(confirm('You lost! New Game?')) {
+                if (confirm('You lost! New Game?')) {
                     this.startGame();
-                }else {
+                } else {
                     this.isGameRunning = false;
                 }
                 return true;
             }
             return false;
+        },
+        monsterAttacks: function () {
+            this.playerHealth -= this.calculateDamage(5, 12);
+            this.checkWin();
+        },
+        playerAttacks: function(min, max) {
+            this.monsterHealth -= this.calculateDamage(min, max);
+
+            if (this.checkWin()) {
+                return;
+            }
         }
     }
 });
