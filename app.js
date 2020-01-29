@@ -34,7 +34,7 @@ new Vue({
             this.monsterAttacks();
         },
         giveUp: function () {
-
+            this.isGameRunning = false; 
         },
         calculateDamage: function (min, max) {
             // damage is the maximum between the minimum damage and
