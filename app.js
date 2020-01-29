@@ -3,24 +3,35 @@ new Vue({
     data: {
         playerHealth: 100,
         monsterHealth: 100,
-        isGameRunning: false
+        isGameRunning: false,
+        turns: []
     },
     methods: {
         startGame: function () {
             this.isGameRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
+            this.turns = [];
         },
         attack: function () {
-            this.playerAttacks(3, 10);
-
+            let damage = this.calculateDamage(3, 10);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits Monster for ' + damage
+            });
             if (this.checkWin()) {
                 return;
             }
             this.monsterAttacks();
         },
         specialAttack: function () {
-            this.playerAttacks(10, 20);
+            let damage = this.calculateDamage(10, 20);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits Monster with SPECIAL ATTACK for ' + damage
+            });
 
             if (this.checkWin()) {
                 return;
@@ -31,10 +42,15 @@ new Vue({
             if(this.playerHealth + 10 <= 100){
                 this.playerHealth += 10;
             }
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player heals for ' + 10
+            });
+
             this.monsterAttacks();
         },
         giveUp: function () {
-            this.isGameRunning = false; 
+            this.isGameRunning = false;
         },
         calculateDamage: function (min, max) {
             // damage is the maximum between the minimum damage and
@@ -62,11 +78,13 @@ new Vue({
             return false;
         },
         monsterAttacks: function () {
-            this.playerHealth -= this.calculateDamage(5, 12);
+            let damage = this.calculateDamage(5, 12);
+            this.playerHealth -= damage;
             this.checkWin();
-        },
-        playerAttacks: function (min, max) {
-            this.monsterHealth -= this.calculateDamage(min, max);
+            this.turns.unshift({
+                isPlayer: false,
+                text: 'Monster hits Player for ' + damage
+            });
         }
     }
 });
